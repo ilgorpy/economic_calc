@@ -19,7 +19,7 @@ def annuittyPayment():
 def summCredit():
     percent = float(input('\nПроцентная ставка: '))
     payment_term = int(input('Срок выплаты кредита: '))
-    tranche = float(input('Платежи по кредиту: '))
+    tranche = float(input('Транши по кредиту: '))
 
     if percent > 0 and payment_term > 0 and tranche > 0:
         summ_percent = 1
