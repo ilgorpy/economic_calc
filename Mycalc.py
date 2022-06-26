@@ -1,161 +1,197 @@
 import math
 
-def fannuittyPayment():
-    unknown = int(input(
-        '\nВыберите неизвестную величину'
-        '\n1 - Сумма кредита'
-        '\n2 - Процентная ставка'
-        '\n3 - Срок выплаты кредита'
-        '\n4 - Платежи по кредиту'
-        '\n5 - Вернуться в главное меню\n'))
-    if unknown == 1:
+def fcredit():  # меню для выбора типа платежа по кредиту
+    choice = input('Выберите тип платежа:\n1 - Аннуитетный платеж\n2 - Дифференцированный платеж\n')
+    match choice.split():
+        case ['1']:
+            fannuittyPayment()
+        case ['2']:
+            fdifferentiatedPayment()
+        case _:
+            print('Ошибка ввода! Повторите попытку.')
+
+def fannuittyPayment():  # меню для выбора неизвестной
+    choice = input(
+        '\nВыберите неизвестную величину:\n1 - Сумма кредита\n2 - Процентная ставка\n3 - Срок выплаты кредита\n4 - Платежи по кредиту\n5 - Вернуться в главное меню\n')
+    match choice.split():
+        case ['1']:
+            fsummCredit()
+        case ['2']:
+            fpercent()
+        case ['3']:
+            fpaymentTerm()
+        case ['4']:
+            ftranche()
+        case ['5']:
+            main()
+        case _:
+            print('Такого пункта меню не существует! Повторите попытку.\n')
+            fannuittyPayment()
+
+def fmenuAnnuit(func):  # меню для выбора дальнейшего пользовательского решения
+    while True:
+        choice = input(
+            '\nВыберите:\n1 - Снова решить подобную задачу задачу с этой неизвестной\n2 - Решить задачу на аннуитетный платеж с другой неизвестной\n3 - Выход в главное меню\n')
+        match choice.split():
+            case ['1']:
+                func()
+            case ['2']:
+                fannuittyPayment()
+            case ['3']:
+                main()
+            case _:
+                print('Ошибка ввода! Повторите попытку.')
+
+def fsummCredit():  # функция, вычисляющая сумму кредита
+    global percent, payment_term, tranche, decimal_point
+    try:
+        percent = float(input('\nПроцентная ставка: '))
+        payment_term = int(input('Срок выплаты кредита: '))
+        tranche = float(input('Платежи по кредиту: '))
+        decimal_point = int(input('Количество знаков после запятой: '))
+    except ValueError:
+        print('Срок выплаты кредита - целое число! Повторите попытку.')
         fsummCredit()
-    elif unknown == 2:
-        fpercent()
-    elif unknown == 3:
-        fpaymentTerm()
-    elif unknown == 4:
-        ftranche()
-    elif unknown == 5:
-        main()
+    if percent <= 0 or payment_term <= 0 or tranche <= 0:
+        print('Ошибка ввода! Вводите положительные числа.')
     else:
-        print('Ошибка ввода! Повторите попытку.')
-        fannuittyPayment()
-
-def fsummCredit():
-    percent = float(input('\nПроцентная ставка: '))
-    payment_term = int(input('Срок выплаты кредита: '))
-    tranche = float(input('Платежи по кредиту: '))
-
-    if percent > 0 and payment_term > 0 and tranche > 0:
         summ_percent = 1
         for n in range(1, payment_term):
             summ_percent += (percent / 100 + 1) ** n
-        summ_credit = round((tranche * summ_percent) / (percent / 100 + 1) ** payment_term, 2)
-        print('Сумма кредита: ', summ_credit, 'рублей')
+        summcredit = round((tranche * summ_percent) / (percent / 100 + 1) ** payment_term, decimal_point)
+        print('Сумма кредита: ', summcredit, 'рублей')
+        fmenuAnnuit(fsummCredit)
 
-        choice = int(input(
-            '\nВыберите'
-            '\n1 - Снова решить подобную задачу задачу с этой неизвестной'
-            '\n2 - Решить задачу на аннуитетный платеж с другой неизвестной'
-            '\n3 - Выход в главное меню\n'))
-        if choice == 1:
-            fsummCredit()
-        elif choice == 2:
-            fannuittyPayment()
-        elif choice == 3:
-            main()
-        else:
-            print('Ошибка ввода! Повторите попытку.')
-    else:
-        print('Ошибка ввода! Вводите положительные числа.')
-
-
-def fpercent():
+def fpercent():  # функция, вычисляющая процентную ставку
+    global summ_credit, tranche1, tranche2, decimal_point
     print('Берут кредит на 2 года(месяца)')
-    summ_credit = float(input('\nСумма кредита: '))
-    tranche1 = float(input('Введите первый платеж: '))
-    tranche2 = float(input('Введите второй платеж: '))
-
-    if summ_credit > 0 and tranche1 > 0 and tranche2 > 0:
+    try:
+        summ_credit = float(input('\nСумма кредита: '))
+        tranche1 = float(input('Введите первый платеж: '))
+        tranche2 = float(input('Введите второй платеж: '))
+        decimal_point = int(input('Количество знаков после запятой: '))
+    except ValueError:
+        print('Срок выплаты кредита - целое число! Повторите попытку.')
+        fpercent()
+    if summ_credit <= 0 or tranche1 <= 0 or tranche2 <= 0:
+        print('Ошибка ввода! Вводите положительные числа.')
+    else:
         tranche1 *= -1
         tranche2 *= -1
-
         d = tranche1 ** 2 - 4 * summ_credit * tranche2
         if d < 0:
             print('Корней нет')
         elif d == 0:
             x = (-tranche1) / (2 * summ_credit)
-            res = round((x - 1) * 100, 2)
+            res = round((x - 1) * 100, decimal_point)
             print('Процентная ставка: ', res, '%')
         else:
             x = (-tranche1 + math.sqrt(d)) / (2 * summ_credit)
-            res = round((x - 1) * 100, 2)
+            res = round((x - 1) * 100, decimal_point)
             print('Процентная ставка: ', res, '%')
+        fmenuAnnuit(fpercent)
 
-        choice = int(input(
-            '\nВыберите'
-            '\n1 - Снова решить подобную задачу задачу с этой неизвестной'
-            '\n2 - Решить задачу на аннуитетный платеж с другой неизвестной'
-            '\n3 - Выход в главное меню\n'))
-        if choice == 1:
-            fpercent()
-        elif choice == 2:
-            fannuittyPayment()
-        elif choice == 3:
-            main()
-        else:
-            print('Ошибка ввода! Повторите попытку.')
+def fpaymentTerm():  # функция, вычисляющая срок кредита
+    global percent, summ_credit_after, summ_credit_before
+    try:
+        summ_credit_before = float(input('\nСумма кредита: '))
+        percent = float(input('Процентная ставка: '))
+        summ_credit_after = float(input('Введите уплаченную сумму: '))
+    except ValueError:
+        print('Ошибка ввода! Повторите попытку.')
+        fpaymentTerm()
+    if percent <= 0 or (summ_credit_after >= summ_credit_before or summ_credit_before <= 0):
+        print('Ошибка ввода! Повторите попытку.')
     else:
-        print('Ошибка ввода! Вводите положительные числа.')
+        term = round(math.log10(summ_credit_after / summ_credit_before) / math.log10(1 + percent / 100))
+        print('За', term, 'лет(года, месяца(-ев)) будет уплачен кредит')
+        fmenuAnnuit(fpaymentTerm)
 
-
-def ftranche():
-    summ_credit = float(input('\nСумма кредита: '))
-    percent = float(input('Процентная ставка: '))
-    payment_term = int(input('Срок выплаты кредита: '))
-
-    if summ_credit > 0 and percent > 0 and payment_term > 0:
-        tranche = (summ_credit * (1 + percent / 100) ** payment_term * (percent / 100)) / ((1 + percent / 100) ** payment_term - 1)
-        print('Платеж по кредиту:', round(tranche, 2))
-
-        choice = int(input(
-            '\nВыберите'
-            '\n1 - Снова решить подобную задачу задачу с этой неизвестной'
-            '\n2 - Решить задачу на аннуитетный платеж с другой неизвестной'
-            '\n3 - Выход в главное меню\n'))
-        if choice == 1:
-            ftranche()
-        elif choice == 2:
-            fannuittyPayment()
-        elif choice == 3:
-            main()
-        else:
-            print('Ошибка ввода! Повторите попытку.')
+def ftranche():  # функция, вычисляющая размер платежей
+    global summ_credit, percent, payment_term, decimal_point
+    try:
+        summ_credit = float(input('\nСумма кредита: '))
+        percent = float(input('Процентная ставка: '))
+        payment_term = int(input('Срок выплаты кредита (целое число): '))
+        decimal_point = int(input('Количество знаков после запятой: '))
+    except ValueError:
+        print('Ошибка ввода! Повторите попытку.')
+        ftranche()
+    if summ_credit <= 0 or percent <= 0 or payment_term <= 0:
+        print('Ошибка ввода! Повторите попытку.')
     else:
-        print('Ошибка ввода! Вводите положительные числа.')
+        tranchee = (summ_credit * (1 + percent / 100) ** payment_term * (percent / 100)) / ((1 + percent / 100) ** payment_term - 1)
+        print('Платеж по кредиту:', round(tranchee, decimal_point))
+        fmenuAnnuit(ftranche)
 
-def fpaymentTerm():
-    print('Пока в процессе разработки...')
-    fannuittyPayment()
-    summ_credit = float(input('\nСумма кредита: '))
-    percent = float(input('Процентная ставка: '))
-    tranche = float(input('Платежи по кредиту: '))
-
-    if summ_credit > 0 and percent > 0 and tranche > 0:
-
-
-        choice = int(input(
-            '\nВыберите'
-            '\n1 - Снова решить подобную задачу задачу с этой неизвестной'
-            '\n2 - Решить задачу на аннуитетный платеж с другой неизвестной'
-            '\n3 - Выход в главное меню\n'))
-        if choice == 1:
-            fpaymentTerm()
-        elif choice == 2:
-            fannuittyPayment()
-        elif choice == 3:
-            main()
-        else:
-            print('Ошибка ввода! Повторите попытку.')
-    else:
-        print('Ошибка ввода! Вводите положительные числа.')
-
-def fdifferentiatedPayment():
+def fdifferentiatedPayment():  # меню для выбора неизвестной
     print('Пока в процессе разработки...')
     main()
 
-def main():
-    choice = int(input('Выберите тип платежа:'
-                       '\n1 - Аннуитетный платеж'
-                       '\n2 - Дифференцированный платеж'
-                       '\nВаш выбор: '))
+# заканчиваются кредиты - начинаются вклады
+
+def fdeposit():  # меню для выбора неизвестной величины вклада
+    choice = input('Выберите неизвестную величину:\n1 - Начальная сумма вклада\n2 - Итоговая сумма вклада\n3 - Продолжительность жизни вклада\n4 - Вернуться в главное меню\n')
+    match choice.split():
+        case ['1']:
+            fsummdepositbefore()
+        case ['2']:
+            fsummdepositafter()
+        case ['3']:
+            ftermdeposit()
+        case ['4']:
+            main()
+        case _:
+            print('Ошибка ввода! Повторите попытку.')
+            fdeposit()
+
+def fsummdepositbefore():
+    print('Пока в процессе разработки...')
+    fdeposit()
+
+def fsummdepositafter():
+    global depos_before, percent, payment_term, decimal_point
+    choice = int(input('Выберите:\n1 - Вносить деньги каждый год(месяц)\n2 - Вклад не будет пополняться'))
     if choice == 1:
-        fannuittyPayment()
+        print('Пока в процессе разработки...')
     elif choice == 2:
-        fdifferentiatedPayment()
+        try:
+            depos_before = float(input('\nПервоначальная сумма вклада: '))
+            percent = float(input('Процентная ставка: '))
+            payment_term = int(input('Длительность вклада: '))
+            decimal_point = int(input('Количество знаков после запятой: '))
+        except ValueError:
+            print('Ошибка ввода! Повторите попытку.')
+            fsummdepositbefore()
+        if depos_before < 0 and percent <= 0 and payment_term <= 0 and decimal_point < 0:
+            print('Ошибка ввода! Введите положительные числа.')
+        else:
+            summ_percent = 1
+            for n in range(1, payment_term):
+                summ_percent += (percent / 100 + 1) ** n
+            depositafter = round(depos_before * (1 + percent * payment_term), decimal_point)
+            print('Итоговая сумма вклада: ', depositafter, 'рублей')
+            fdeposit()
     else:
-        print('Ошибка ввода! Повторите попытку.')
-        main()
+        print('Ошибка ввода! Введите 1 или 2.')
+        fsummdepositbefore()
+
+def ftermdeposit():
+    print('Пока в процессе разработки...')
+    fdeposit()
+
+def main():  # главное меню
+    print('Вклады или кредиты?')
+    choice = input('1 - Кредит\n2 - Вклад\n')
+    match choice.split():
+        case ['1']:
+            fcredit()
+        case ['2']:
+            fdeposit()
+        case _:
+            print('Ошибка ввода! Повторите попытку.')
+            main()
+
+percent, payment_term, tranche, decimal_point, summ_credit, tranche1, tranche2, summ_credit_after, summ_credit_before, depos_before = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 main()
