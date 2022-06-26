@@ -8,7 +8,7 @@ def fcredit():  # меню для выбора типа платежа по кр
         case ['2']:
             fdifferentiatedPayment()
         case _:
-            print('Ошибка ввода! Повторите попытку.')
+            print('Ошибка ввода! Повторите попытку!')
 
 def fannuittyPayment():  # меню для выбора неизвестной
     choice = input(
