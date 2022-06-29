@@ -1,0 +1,15 @@
+#title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: darkgray;
+    color: black;
+    box-shadow: 4px 4px 5px black;
+}
+#inf{
+    align-items: center;
+    background-color: darkgray;
+    color: black;
+    box-shadow: 4px 4px 5px black;
+    margin: auto;
+}
