@@ -145,36 +145,53 @@ def fdeposit():  # меню для выбора неизвестной вели�
             print('Ошибка ввода! Повторите попытку.')
             fdeposit()
 
+def fmenudeposit(func):  # меню для выбора дальнейшего пользовательского решения
+    while True:
+        choice = input(
+            '\nВыберите:\n1 - Снова решить подобную задачу задачу с этой неизвестной\n2 - Решить задачу на вклад с другой неизвестной\n3 - Выход в главное меню\n')
+        match choice.split():
+            case ['1']:
+                func()
+            case ['2']:
+                fdeposit()
+            case ['3']:
+                main()
+            case _:
+                print('Ошибка ввода! Повторите попытку.')
+
+
+def fsummdepositafter():
+    global percent, payment_term, decimal_point, initial_deposit_amount, additional_amount, count
+    try:
+        initial_deposit_amount = float(input('\nНачальная сумма вклада: '))
+        percent = float(input('Процент по вкладу: '))
+        payment_term = int(input('Срок вклада: '))
+        additional_amount = float(input('Дополнительная сумма(необязательно - поставьте ноль): '))
+        count = int(input('Количество внесений доп. сумм(необязательно - поставьте ноль): '))
+        decimal_point = int(input('Количество знаков после запятой: '))
+    except ValueError:
+        print('Ошибка ввода! Повторите попытку.')
+        fsummdepositafter()
+    if initial_deposit_amount <= 0 and percent <= 0 and payment_term <= 0 and additional_amount < 0 and decimal_point <= 0:
+        print('Ошибка ввода! Повторите попытку.')
+        fsummdepositafter()
+    else:
+        for term in range(1, payment_term + 1):
+            initial_deposit_amount *= (1 + percent / 100)
+            if count != 0:
+                initial_deposit_amount += additional_amount
+                count -= 1
+            print(f'Сумма вклада на {term} год(месяц):', end=' ')
+            print(round(initial_deposit_amount, decimal_point))
+
+        print('Итоговая сумма по вкладу:', round(initial_deposit_amount, decimal_point))
+    fmenudeposit(fsummdepositafter)
+
+
 def fsummdepositbefore():
     print('Пока в процессе разработки...')
     fdeposit()
 
-def fsummdepositafter():
-    global depos_before, percent, payment_term, decimal_point
-    choice = int(input('Выберите:\n1 - Вносить деньги каждый год(месяц)\n2 - Вклад не будет пополняться'))
-    if choice == 1:
-        print('Пока в процессе разработки...')
-    elif choice == 2:
-        try:
-            depos_before = float(input('\nПервоначальная сумма вклада: '))
-            percent = float(input('Процентная ставка: '))
-            payment_term = int(input('Длительность вклада: '))
-            decimal_point = int(input('Количество знаков после запятой: '))
-        except ValueError:
-            print('Ошибка ввода! Повторите попытку.')
-            fsummdepositbefore()
-        if depos_before < 0 and percent <= 0 and payment_term <= 0 and decimal_point < 0:
-            print('Ошибка ввода! Введите положительные числа.')
-        else:
-            summ_percent = 1
-            for n in range(1, payment_term):
-                summ_percent += (percent / 100 + 1) ** n
-            depositafter = round(depos_before * (1 + percent * payment_term), decimal_point)
-            print('Итоговая сумма вклада: ', depositafter, 'рублей')
-            fdeposit()
-    else:
-        print('Ошибка ввода! Введите 1 или 2.')
-        fsummdepositbefore()
 
 def ftermdeposit():
     print('Пока в процессе разработки...')
@@ -182,16 +199,18 @@ def ftermdeposit():
 
 def main():  # главное меню
     print('Вклады или кредиты?')
-    choice = input('1 - Кредит\n2 - Вклад\n')
+    choice = input('1 - Кредит\n2 - Вклад\n3 - Выход\n')
     match choice.split():
         case ['1']:
             fcredit()
         case ['2']:
             fdeposit()
+        case ['3']:
+            exit()
         case _:
             print('Ошибка ввода! Повторите попытку.')
             main()
 
-percent, payment_term, tranche, decimal_point, summ_credit, tranche1, tranche2, summ_credit_after, summ_credit_before, depos_before = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+percent, payment_term, tranche, decimal_point, summ_credit, tranche1, tranche2, summ_credit_after, summ_credit_before, depos_before, initial_deposit_amount, additional_amount, count = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 main()

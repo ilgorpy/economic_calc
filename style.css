@@ -1,15 +1,38 @@
+#background{
+    background-color: #ecc19c;
+    padding: 1%;
+    margin: -8px;
+}
+
 #title{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: darkgray;
+    width: 50%;
+    background-color: #51a88b;
     color: black;
     box-shadow: 4px 4px 5px black;
+    margin-bottom: 20px;
 }
+
 #inf{
     align-items: center;
-    background-color: darkgray;
+    background-color: #51a88b;
     color: black;
     box-shadow: 4px 4px 5px black;
-    margin: auto;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#point{
+    padding: 10px;
+    background-color: #51a88b;
+    box-shadow: 4px 4px 5px black;
+    margin-bottom: 20px;
+}
+
+#task{
+    padding: 10px;
+    background-color: #51a88b;
+    box-shadow: 4px 4px 5px black;
 }
